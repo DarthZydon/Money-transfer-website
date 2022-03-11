@@ -1,6 +1,6 @@
 package com.techelevator.tenmo.controller;
 
-import com.techelevator.tenmo.dao.AccountDAO;
+import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
@@ -17,18 +17,18 @@ import java.security.Principal;
 public class AccountController {
 
     private final UserDao userDao;
-    private final AccountDAO accountDAO;
+    private final AccountDao accountDao;
 
-    public AccountController(UserDao userDao, AccountDAO accountDAO) {
+    public AccountController(UserDao userDao, AccountDao accountDao) {
         this.userDao = userDao;
-        this.accountDAO = accountDAO;
+        this.accountDao = accountDao;
     }
 
     public BigDecimal getBalance(Principal principal){
 
         String username = principal.getName();
        User user = userDao.findByUsername(username);
-        Account account = accountDAO.findByUser_ID(user.getId());
+        Account account = accountDao.findByUserId(user.getId());
         return account.getBalance();
 
     }
