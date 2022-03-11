@@ -10,6 +10,7 @@ import com.techelevator.tenmo.model.User;
 import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -22,13 +23,17 @@ import java.util.List;
 public class TransferController {
 
     private final TransferDao transferDao;
-
-    public TransferController(TransferDao transferDao) {
+    private final UserDao userDao;
+    public TransferController(TransferDao transferDao, UserDao userDao) {
         this.transferDao = transferDao;
+        this.userDao = userDao;
+    }
+    @RequestMapping (method = RequestMethod.GET)
+    public List<Transfer> getTransfersByUserId(Principal principal) {
+
+        User user = userDao.findByUsername(principal.getName());
+        List<Transfer> transferList = transferDao.getTransfersByUserId(user.getId());
+        return transferList;
     }
 
-    public List<Transfer> getTransfersByUserId() {
-        List<Transfer> transferList = JdbcTransferDao.getTransfersByUserId();
-
-    }
 }

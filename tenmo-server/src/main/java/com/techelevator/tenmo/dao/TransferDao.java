@@ -11,5 +11,7 @@ public interface TransferDao {
 
     int findTransferIDbyUsername(String username);
 
+    List<Transfer> getTransfersByUserId(Long id);
 
-}
+
+    }
