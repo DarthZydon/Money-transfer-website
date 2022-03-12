@@ -65,7 +65,12 @@ public class JdbcTransferDao implements TransferDao {
         Transfer transfer = new Transfer();
 
         try {
-            String sql = "SELECT * FROM transfer WHERE account_from = ?;";
+            String sql = "SELECT * FROM transfer\n" +
+                    "WHERE account_from = (\n" +
+                    "SELECT account_id FROM tenmo_user\n" +
+                    "JOIN account ON account.user_id = tenmo_user.user_id\n" +
+                    "WHERE account.user_id = ?\n" +
+                    ")\n";
             SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, id);
             if (rowSet.next()) {
                 transfer = mapRowToTransfer(rowSet);
@@ -84,7 +89,7 @@ public class JdbcTransferDao implements TransferDao {
         transfer.setTransferStatusId(rs.getInt("transfer_status_id"));
         transfer.setAccountFrom(rs.getLong("account_from"));
         transfer.setAccountTo(rs.getLong("account_to"));
-        transfer.setAmount(BigDecimal.valueOf(rs.getDouble("balance")));
+        transfer.setAmount(BigDecimal.valueOf(rs.getDouble("amount")));
 
         return transfer;
     }

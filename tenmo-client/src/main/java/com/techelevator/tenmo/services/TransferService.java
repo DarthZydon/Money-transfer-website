@@ -1,46 +1,62 @@
 package com.techelevator.tenmo.services;
 
-import com.techelevator.util.BasicLogger;
+import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
+import okhttp3.Headers;
+import okhttp3.Response;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestClientResponseException;
+
 import org.springframework.web.client.RestTemplate;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
-import java.security.Principal;
-import java.util.List;
+
 
 public class TransferService {
+
     private final String baseUrl;
     private final RestTemplate restTemplate = new RestTemplate();
 
     public TransferService(String baseUrl) {
-        this.baseUrl = baseUrl + "/account" + "/transfers";
+        this.baseUrl = baseUrl + "/account" + "/transfer";
     }
 
-    public List getTransfers(Long userId) {
+    @RequestMapping
+    public Transfer[] getTransfers(AuthenticatedUser user) {
+
+        Long userID = user.getUser().getId();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(user.getToken());
+        ResponseEntity<Transfer[]> responseArray = restTemplate.exchange(baseUrl, HttpMethod.GET, new HttpEntity<>(headers), Transfer[].class);
+        if (responseArray != null) {
+            return responseArray.getBody();
+        } else {
+            System.out.println("Sorry, no transfers listed!");
+            return responseArray.getBody();
+        }
 
     }
 
-//    Note: Add transaction nature
-//    @RequestMapping(method = RequestMethod.POST)
-//    public void Transfer(AuthenticatedUser user, Long accountTo, BigDecimal amount) {
-//        try {
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setBearerAuth(user.getToken());
-//
-//        } catch (RestClientResponseException | ResourceAccessException e) {
-//            System.out.println(e.getMessage());
-//        }
-//    }
+    @RequestMapping
+    public void transferSend(AuthenticatedUser user, User accountTo, BigDecimal amountSent) {
+        Long accFrom = user.getUser().getId();
+        Long accTo = accountTo.getId();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth((user.getToken()));
+        Transfer transfer = new Transfer();
+        transfer.setAccountFrom(accFrom);
+        transfer.setAccountTo(accTo);
+        transfer.setTransferTypeId(2);
+        transfer.setAmount(amountSent);
+        transfer.setTransferStatusId(2);
+        HttpEntity<Transfer> transferResponse = restTemplate.postForEntity(baseUrl, HttpMethod.POST, Transfer.class);
+    }
+
 }

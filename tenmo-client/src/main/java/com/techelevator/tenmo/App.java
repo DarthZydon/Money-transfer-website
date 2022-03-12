@@ -1,12 +1,12 @@
 package com.techelevator.tenmo;
 
+import java.util.Scanner;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
-import com.techelevator.tenmo.services.AccountService;
-import com.techelevator.tenmo.services.AuthenticationService;
-import com.techelevator.tenmo.services.ConsoleService;
-import com.techelevator.tenmo.services.TransferService;
+import com.techelevator.tenmo.services.*;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ public class App {
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private final AccountService accountService = new AccountService(API_BASE_URL);
     private final TransferService transferService = new TransferService(API_BASE_URL);
+    private final UserService userService = new UserService(API_BASE_URL + "tenmo_user");
     private AuthenticatedUser currentUser;
 
     public static void main(String[] args) {
@@ -95,13 +96,17 @@ public class App {
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
         BigDecimal balance = accountService.getBalance(currentUser);
-//        TODO clean this up later
-        System.out.println("balance =" + balance);
+        System.out.println("Your current balance is: " + balance);
 	}
 
 	private void viewTransferHistory() {
-        List<Transfer> list = transferService.
-		
+        Transfer[] transferArray = transferService.getTransfers(currentUser);
+        List<Transfer> transferList = new ArrayList<>();
+        Transfer transfer = new Transfer();
+        for(int i = 0; i < transferArray.length; i++) {
+            transferList.add(transferArray[i]);
+        }
+        System.out.println("Here are your recorded transfers:\n" + transferList);
 	}
 
 	private void viewPendingRequests() {
@@ -109,8 +114,19 @@ public class App {
 
 	}
 
+    @RequestMapping
 	private void sendBucks() {
-		// TODO Auto-generated method stub
+        User[] userArray = userService.getUsers(currentUser);
+        List<User> userList = new ArrayList<>();
+        User user = new User();
+        for(int i = 0; i < userArray.length; i++) {
+            userList.add(userArray[i]);
+        }
+        System.out.println(userList);
+        int accountTo = (consoleService.promptForInt("Please enter the user you are sending money to: "));
+        User userTo = (userArray[accountTo]);
+        BigDecimal amountSent = (consoleService.promptForBigDecimal("Please enter the amount you wish to send: "));
+		transferService.transferSend(currentUser, userTo, amountSent);
 		
 	}
 

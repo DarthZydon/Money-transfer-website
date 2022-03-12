@@ -21,7 +21,7 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public Account findByUserId(Long id) {
-        String sql = "SELECT * FROM account WHERE account_id =  ?;";
+        String sql = "SELECT * FROM account WHERE user_id =  ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, id);
         if (rowSet.next()){
             return mapRowToAccount(rowSet);

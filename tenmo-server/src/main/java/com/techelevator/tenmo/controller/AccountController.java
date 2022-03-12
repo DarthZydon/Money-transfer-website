@@ -6,9 +6,11 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.net.http.HttpRequest;
 import java.security.Principal;
 
 @RestController
@@ -24,10 +26,10 @@ public class AccountController {
         this.accountDao = accountDao;
     }
 
+    @RequestMapping(method = RequestMethod.GET)
     public BigDecimal getBalance(Principal principal){
-
         String username = principal.getName();
-       User user = userDao.findByUsername(username);
+        User user = userDao.findByUsername(username);
         Account account = accountDao.findByUserId(user.getId());
         return account.getBalance();
 

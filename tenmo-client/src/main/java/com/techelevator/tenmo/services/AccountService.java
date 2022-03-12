@@ -18,7 +18,7 @@ public class AccountService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public AccountService(String baseUrl) {
-        this.baseUrl = baseUrl + "account/";
+        this.baseUrl = baseUrl + "account";
     }
     public BigDecimal getBalance(AuthenticatedUser user){
         BigDecimal balance = null;
@@ -26,7 +26,7 @@ public class AccountService {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(user.getToken());
-            ResponseEntity<BigDecimal> response =  restTemplate.exchange(baseUrl + "balance", HttpMethod.GET, new HttpEntity<>(headers), BigDecimal.class);
+            ResponseEntity<BigDecimal> response =  restTemplate.exchange(baseUrl, HttpMethod.GET, new HttpEntity<>(headers), BigDecimal.class);
             balance = response.getBody();
         } catch (RestClientException e) {
             BasicLogger.log(e.getMessage());
