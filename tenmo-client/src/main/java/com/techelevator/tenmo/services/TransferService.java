@@ -45,18 +45,19 @@ public class TransferService {
     }
 
     @RequestMapping
-    public void transferSend(AuthenticatedUser user, User accountTo, BigDecimal amountSent) {
-        Long accFrom = user.getUser().getId();
-        Long accTo = accountTo.getId();
+    public void transferSend(AuthenticatedUser user, int userId, BigDecimal amountSent) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth((user.getToken()));
         Transfer transfer = new Transfer();
-        transfer.setAccountFrom(accFrom);
-        transfer.setAccountTo(accTo);
+        transfer.setAccountFrom((long) userId);
+        transfer.setAccountTo((long) userId);
         transfer.setTransferTypeId(2);
         transfer.setAmount(amountSent);
         transfer.setTransferStatusId(2);
-        HttpEntity<Transfer> transferResponse = restTemplate.postForEntity(baseUrl, HttpMethod.POST, Transfer.class);
+        HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
+        ResponseEntity<Transfer> transferResponse = restTemplate.exchange(baseUrl, HttpMethod.POST,entity, Transfer.class);
+        transfer = transferResponse.getBody();
+
     }
 
 }

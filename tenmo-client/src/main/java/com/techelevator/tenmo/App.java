@@ -116,15 +116,15 @@ public class App {
 
     @RequestMapping
 	private void sendBucks() {
-        User[] userArray = userService.getUsers(currentUser);
-        List<User> userList = new ArrayList<>();
-        User user = new User();
-        for(int i = 0; i < userArray.length; i++) {
-            userList.add(userArray[i]);
-        }
-        System.out.println(userList);
-        int accountTo = (consoleService.promptForInt("Please enter the user you are sending money to: "));
-        User userTo = (userArray[accountTo]);
+//        User[] userArray = userService.getUsers(currentUser);
+//        List<User> userList = new ArrayList<>();
+//        User user = new User();
+//        for(int i = 0; i < userArray.length; i++) {
+//            userList.add(userArray[i]);
+//        }
+//        System.out.println(userList);
+        int userTo = (consoleService.promptForInt("Please enter the user you are sending money to: "));
+//        User userTo = (userArray[accountTo]);
         BigDecimal amountSent = (consoleService.promptForBigDecimal("Please enter the amount you wish to send: "));
 		transferService.transferSend(currentUser, userTo, amountSent);
 		
