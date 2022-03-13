@@ -1,6 +1,8 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.AccountDao;
+import com.techelevator.tenmo.dao.JdbcAccountDao;
+import com.techelevator.tenmo.dao.JdbcTransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
@@ -27,7 +29,7 @@ public class AccountController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public BigDecimal getBalance(Principal principal){
+    public BigDecimal getBalance(Principal principal) {
         String username = principal.getName();
         User user = userDao.findByUsername(username);
         Account account = accountDao.findByUserId(user.getId());
@@ -35,3 +37,13 @@ public class AccountController {
 
     }
 }
+
+//    @RequestMapping(method = RequestMethod.PUT)
+//    public boolean updateAccounts(Principal principal, String username, BigDecimal balance) {
+//        User user1 = userDao.findByUsername(principal.getName());
+//        User user2 = userDao.findByUsername(username);
+//        Long accountFrom = user1.getId();
+//        Long accountTo = user2.getId();
+//        return JdbcAccountDao.adjustAccounts(accountFrom, accountTo, balance);
+//    }
+//}

@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
@@ -38,4 +39,13 @@ public class JdbcAccountDao implements AccountDao {
 
         return account;
     }
+
+//    @Transactional
+//    public boolean adjustAccounts(Long userIdFrom, Long userIdTo, BigDecimal amount) {
+//        String sql1 = "UPDATE account SET balance -= ? FROM account WHERE account_id = ?";
+//        SqlRowSet rowSet1 = jdbcTemplate.queryForRowSet(sql1, amount, userIdFrom);
+//        String sql2 = "UPDATE account SET balance += ? FROM account WHERE account_id = ?";
+//        SqlRowSet rowSet2 = jdbcTemplate.queryForRowSet(sql2, amount, userIdTo);
+//        return true;
+//    }
 }
